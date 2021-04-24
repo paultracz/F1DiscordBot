@@ -1,0 +1,22 @@
+{
+  "name": "discordbot",
+  "version": "1.0.0",
+  "description": "Formula 1 Discord Bot",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paultracz/F1DiscordBot.git"
+  },
+  "author": "Paul Tracz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/paultracz/F1DiscordBot/issues"
+  },
+  "homepage": "https://github.com/paultracz/F1DiscordBot#readme",
+  "dependencies": {
+    "discord.js": "^12.5.3"
+  }
+}
