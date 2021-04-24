@@ -4,8 +4,8 @@ module.exports = {
     description: "this is a ping pong command",
     callback: ({message}) => {
         if (message) {
-            message.reply('pong!');
+            message.reply('https://sportsurge.net/#/groups/13');
         }
-        return 'pong!'
+        return 'https://sportsurge.net/#/groups/13'
     }
 }
