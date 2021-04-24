@@ -30,4 +30,5 @@ client.on('message', message => {
     }
 });
 
-client.login('ODM1NTAxODEzMjMwNzMxMjY1.YIQXsw.PUTGmmzw8bcyIQ5bzsWyeFqtEV0');
+var token = fs.readFileSync('./token.txt').toString();
+client.login(token);
