@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/paultracz/F1DiscordBot#readme",
   "dependencies": {
+    "axios": "^0.21.1",
     "discord.js": "^12.5.3"
   }
 }

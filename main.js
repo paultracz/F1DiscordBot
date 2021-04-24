@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 
 const client = new Discord.Client();
 
-const prefix = '-';
+const prefix = '!';
 
 const fs = require('fs');
 
@@ -27,6 +27,10 @@ client.on('message', message => {
 
     if(command === 'ping'){
         client.commands.get('ping').execute(message, args);
+    }
+    
+    if(command === 'nextrace'){
+        client.commands.get('next race').execute(message, args);
     }
 });
 
