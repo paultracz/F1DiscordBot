@@ -1,13 +1,17 @@
 const axios = require('axios');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = {
     slash: 'both',
     testOnly: true,
     description: "Displays information for the upcoming F1 race",
     callback: ({ message }) => {
-        async function getUser() {
+        const embed = new MessageEmbed()
+        .setTitle('Upcoming Race')
+        
+        async function getData() {
             try {
-                const response = await axios.get('http://ergast.com/api/f1/current/next.json');
+                const response = await axios.get('http://ergast.com/api/f1/current/next.json?limit=1');
                 const responseTotal = await axios.get('http://ergast.com/api/f1/current.json');
                 var totalRounds = (responseTotal.data.MRData.total);
                 var round = (response.data.MRData.RaceTable.round);
@@ -29,16 +33,22 @@ module.exports = {
                     + ' ' + dayOfMonth
                     + ', ' + year
                     + '\nTime: ' + localTime);
+
+                embed.addField('Round', (round + '/' + totalRounds))
+                embed.addField('Race', raceName)
+                embed.addField('Date', weekday + ', ' + month
+                    + ' ' + dayOfMonth + ', ' + year)
+                embed.addField('Time', localTime)
                 if (message) {
-                    message.reply(output);
+                    message.reply('', {embed});
                 }
 
             } catch (error) {
                 console.error(error);
             }
-            return output;
+            return embed;
         }
-        return getUser();
+        return getData();
     }
 }
 
