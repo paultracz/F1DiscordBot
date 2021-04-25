@@ -4,7 +4,7 @@ const { MessageEmbed } = require('discord.js');
 module.exports = {
     slash: 'both',
     testOnly: true,
-    description: "Displays current driver standings",
+    description: "Displays current driver or constructor standings",
     minArgs: 1,
     expectedArgs: '<Drivers or Teams>',
     callback: async ({ message, args }) => {
