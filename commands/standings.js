@@ -2,24 +2,19 @@ const axios = require('axios');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = {
-    slash: 'both',
-    testOnly: true,
-    description: "Displays current driver or constructor standings",
-    minArgs: 1,
-    expectedArgs: '<Drivers or Teams>',
-    callback: async ({ message, args }) => {
+    callback: async (args) => {
         const embed = new MessageEmbed()
         async function getData() {
-            const [input] = args;
+            const input = args;
             if (input.toLowerCase() === 'drivers') {
                 embed.setTitle('Driver Standings');
                 const response = await axios.get('http://ergast.com/api/f1/current/driverstandings.json?limit=20');
                 const data = response.data.MRData.StandingsTable.StandingsLists[0];
-                var positions = [];
-                var drivers = [];
-                var points = [];
+                let positions = [];
+                let drivers = [];
+                let points = [];
                 data.DriverStandings.forEach(obj => {
-                    var fullName = obj.Driver.givenName + ' ' + obj.Driver.familyName;
+                    let fullName = obj.Driver.givenName + ' ' + obj.Driver.familyName;
                     positions.push(obj.position);
                     drivers.push(fullName);
                     points.push(obj.points);
@@ -33,9 +28,9 @@ module.exports = {
                 embed.setTitle('Team Standings');
                 const response = await axios.get('http://ergast.com/api/f1/current/constructorStandings.json?limit=20');
                 const data = response.data.MRData.StandingsTable.StandingsLists[0];
-                var positions = [];
-                var teams = [];
-                var points = [];
+                let positions = [];
+                let teams = [];
+                let points = [];
                 data.ConstructorStandings.forEach(obj => {
                     positions.push(obj.position);
                     teams.push(obj.Constructor.name);
@@ -49,14 +44,6 @@ module.exports = {
                 embed.setDescription('Unable to find results for ' + input);
             }
 
-            try {
-                if (message) {
-                    message.reply('standings', { embed });
-                }
-
-            } catch (error) {
-                console.error(error);
-            }
             return embed;
         }
         return getData();
