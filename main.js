@@ -3,13 +3,18 @@ const Discord = require('discord.js');
 
 const client = new Discord.Client();
 const fs = require('fs');
-const nextRace = require('./commands/nextRace');
-const standings = require('./commands/standings');
-const streams = require('./commands/streams');
+client.commands = new Discord.Collection();
 const guildId = '835509575707787324'
 
+const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
+for (const file of commandFiles) {
+    const command = require(`./commands/${file}`);
+
+    client.commands.set(command.name, command);
+}
+
 const getApp = (guildId) => {
-    const app  = client.api.applications(client.user.id);
+    const app = client.api.applications(client.user.id);
     if (guildId) {
         app.guilds(guildId);
     }
@@ -20,13 +25,7 @@ client.once('ready', async () => {
     console.log('Bot is online');
 
     const commands = await getApp(guildId).commands.get();
-    console.log(commands);
-    // await getApp(guildId).commands.post({
-    //     data: {
-    //         name: 'ping',
-    //         description: 'Ping pong command',
-    //     },
-    // })
+    //console.log(commands);
 
     // await getApp(guildId).commands.post({
     //     data: {
@@ -43,17 +42,25 @@ client.once('ready', async () => {
     //     }
     // })
 
-    // await getApp(guildId).commands.post({
-    //     data: {
-    //         name: 'nextRace',
-    //         description: 'Displays information for the upcoming F1 race',
-    //     }
-    // })
+    // async function update() {
+    //     let embed = new Discord.MessageEmbed();
+    //     embed = await nextRace.callback();
+    //     client.channels.cache.get('836120516255285289').send(embed);
+    //     setTimeout(update, 8000);
+    // }
+    // setTimeout(update, 8000);
+
+    await getApp(guildId).commands.post({
+        data: {
+            name: 'balance',
+            description: 'Displays Points Balance of Account',
+        }
+    });
 
     client.ws.on('INTERACTION_CREATE', async (interaction) => {
         const { name, options } = interaction.data;
         const command = name.toLowerCase();
-
+        console.log(interaction.member.user.username);
         const args = {};
 
         if (options) {
@@ -61,19 +68,26 @@ client.once('ready', async () => {
                 const { name, value } = element;
                 args[name] = value;
             });
-        }    
+        }
 
         if (command === 'nextrace') {
             let embed = new Discord.MessageEmbed();
-            embed = await nextRace.callback();
+            embed = await client.commands.get(command).callback();
             reply(interaction, embed);
-        } else if (command === 'standings') {
+        }
+        else if (command === 'standings') {
             let embed = new Discord.MessageEmbed();
-            embed = await standings.callback(args.driversorteams);
+            embed = await client.commands.get(command).callback(args.driversorteams);
             reply(interaction, embed);
-        } else if (command === 'streams') {
+        }
+        else if (command === 'streams') {
             let embed = new Discord.MessageEmbed();
-            embed = await streams.callback();
+            embed = await client.commands.get(command).callback();
+            reply(interaction, embed);
+        }
+        else if (command === 'balance') {
+            let embed = new Discord.MessageEmbed();
+            embed = await client.commands.get(command).callback(interaction);
             reply(interaction, embed);
         }
     })
@@ -91,31 +105,20 @@ const reply = async (interaction, response) => {
     client.api.interactions(interaction.id, interaction.token).callback.post({
         data: {
             type: 4,
-            data, 
-          },
+            data,
+        },
     });
 }
 
 const createAPIMessage = async (interaction, content) => {
-    const { data, files } = await Discord.APIMessage.create (
+    const { data, files } = await Discord.APIMessage.create(
         client.channels.resolve(interaction.channel_id),
         content
     )
-    .resolveData()
-    .resolveFiles()
-
+        .resolveData()
+        .resolveFiles();
     return { ...data, files }
 }
 
 var token = fs.readFileSync('./token.txt').toString();
 client.login(token);
-
-// client.once('ready', () => {
-//     console.log('Bot is online');
-
-//     new WOKCommands(client, {
-//         commandsDir: 'commands',
-//         testServers: [guildId],
-//         showWarns: false,
-//     })
-// });

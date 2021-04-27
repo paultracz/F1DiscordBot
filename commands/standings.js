@@ -2,8 +2,9 @@ const axios = require('axios');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = {
+    name: 'standings',
     callback: async (args) => {
-        const embed = new MessageEmbed()
+        const embed = new MessageEmbed();
         async function getData() {
             const input = args;
             if (input.toLowerCase() === 'drivers') {
@@ -20,9 +21,9 @@ module.exports = {
                     points.push(obj.points);
                 }); {
                 }
-                embed.addField('Pos', positions, inline = true)
-                embed.addField('Driver', drivers, inline = true)
-                embed.addField('Points', points, inline = true)
+                embed.addField('Pos', positions, inline = true);
+                embed.addField('Driver', drivers, inline = true);
+                embed.addField('Points', points, inline = true);
             }
             else if (input.toLowerCase() === 'teams') {
                 embed.setTitle('Team Standings');
@@ -36,14 +37,13 @@ module.exports = {
                     teams.push(obj.Constructor.name);
                     points.push(obj.points);
                 });
-                embed.addField('Pos', positions, inline = true)
-                embed.addField('Driver', teams, inline = true)
-                embed.addField('Points', points, inline = true)
+                embed.addField('Pos', positions, inline = true);
+                embed.addField('Driver', teams, inline = true);
+                embed.addField('Points', points, inline = true);
             }
             else {
                 embed.setDescription('Unable to find results for ' + input);
             }
-
             return embed;
         }
         return getData();
